@@ -16,7 +16,7 @@ export default function Home() {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/query?what=Sushi&location=Tokyo"); // Replace with your API endpoint
+      const response = await fetch("https://listings-restaurants.vercel.app/api/query?what=Sushi&location=Tokyo"); // Replace with your API endpoint
       const result = await response.json();
       console.log(result);
       setData(result);
