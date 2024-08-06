@@ -32,7 +32,7 @@ export const restaurants = [
       name: 'Taco Town',
       food: 'Tacos',
       service: 'Dine-In',
-      location: 'Mexico City, Mexico'
+      location: 'Mexico City, Tokyo'
     },
     {
       id: 6,
@@ -43,3 +43,17 @@ export const restaurants = [
     },
   ];
   
+  export const city = [
+    {
+      id: 1,
+      city: "faisalabad",
+    },
+    {
+      id: 2,
+      city: "Lahore",
+    },
+    {
+      id: 3,
+      city: "Islamabad",
+    }
+  ];
