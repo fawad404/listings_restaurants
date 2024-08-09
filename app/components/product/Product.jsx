@@ -22,7 +22,7 @@ const Product = () => {
                   <div key={list} className="w-full">
                     <a className="group block max-w-sm mx-auto md:max-w-none h-full border border-gray-100 bg-white rounded-xl transform hover:scale-105 transition duration-500" href="#">
                       <div className="flex items-center justify-between px-4 py-5">
-                        <span className="text-sm">@saturn_ui</span>
+                        <span className="text-sm">@fawad_ui</span>
                         <img src="https://static.shuffle.dev/components/preview/2f808e47-944e-42cf-b821-2358251e0600/assets/public/saturn-assets/images/instagram-photos/icon-instagram.svg" alt="" />
                       </div>
                       <div className="h-72">

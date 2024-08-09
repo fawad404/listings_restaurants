@@ -3,10 +3,10 @@ import React, { useState } from 'react'
 import City from '../city/City'
 import WhatCom from '../whatCom/WhatCom'
 import { city } from '@/app/utilis/db'
+import Navbar from '../navbar/Navbar'
 const Featured = () => {
         const [selectedCity, setSelectedCity] = useState('');
         const [what, setWhat] = useState('');
-        const[jsonn, setJsonn] = useState({});
       
         const handleChange = (event) => {
             console.log(event.target.value)
@@ -19,7 +19,7 @@ const Featured = () => {
             }
             try {
               const response = await fetch(`https://listings-restaurants.vercel.app/api/query?what=${what}&location=Tokyo`); // Replace with your API endpoint
-              setJsonn(response);
+              // setJsonn(response);
               const result = await response.json();
               console.log(result);
             } catch (error) {
@@ -30,6 +30,7 @@ const Featured = () => {
          
   return (
     <section className="relative pb-20 xl:pb-32 overflow-hidden">
+      <Navbar color={"white"} />
       <img className="absolute bottom-0 left-0 w-full h-full object-cover brightness-50" src="https://restaurantpro.listingprowp.com/wp-content/uploads/2017/04/heroheader-restpro-1920x600_01_opt.jpg" alt="" />
       <nav className="py-6 mb-12 md:mb-24 bg-white">
         <div className="container px-4 mx-auto removed"></div>
