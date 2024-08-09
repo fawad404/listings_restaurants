@@ -7,6 +7,7 @@ const AddRestaurant = () => {
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
   const [geolocation, setGeolocation] = useState({ lat: null, lon: null });
+  // console.log(process.env.NEXT_PUBLIC_WEB_URL);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -34,7 +35,7 @@ const AddRestaurant = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/addrestaurant", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

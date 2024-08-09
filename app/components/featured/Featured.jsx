@@ -18,7 +18,7 @@ const Featured = () => {
                 return;
             }
             try {
-              const response = await fetch(`https://listings-restaurants.vercel.app/api/query?what=${what}&location=Tokyo`); // Replace with your API endpoint
+              const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/query?what=${what}&location=Tokyo`); // Replace with your API endpoint
               // setJsonn(response);
               const result = await response.json();
               console.log(result);
