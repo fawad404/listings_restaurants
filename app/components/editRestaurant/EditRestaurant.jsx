@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const AddRestaurant = () => {
+const EditRestaurant = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
@@ -163,4 +163,4 @@ const AddRestaurant = () => {
   );
 };
 
-export default AddRestaurant;
+export default EditRestaurant;
