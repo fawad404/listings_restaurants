@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const AddRestaurant = () => {
@@ -7,6 +8,7 @@ const AddRestaurant = () => {
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
   const [geolocation, setGeolocation] = useState({ lat: null, lon: null });
+  const router = useRouter();
   // console.log(process.env.NEXT_PUBLIC_WEB_URL);
 
   useEffect(() => {
@@ -47,6 +49,8 @@ const AddRestaurant = () => {
         alert("Restaurant added successfully!");
         const data = await response.json();
         console.log(data);
+        router.push('/');
+        
       }else {
         const errorData = await response.json();
       alert(errorData.error || 'An error occurred');
