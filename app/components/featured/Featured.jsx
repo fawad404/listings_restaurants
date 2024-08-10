@@ -8,11 +8,11 @@ const Featured = () => {
         const [selectedCity, setSelectedCity] = useState('');
         const [what, setWhat] = useState('');
       
-        const handleChange = (event) => {
-            console.log(event.target.value)
-          setSelectedCity(event.target.value);
-          console.log(selectedCity);
-        }
+        // const handleChange = (event) => {
+        //     console.log(event.target.value)
+        //   setSelectedCity(event.target.value);
+        //   console.log(selectedCity);
+        // }
         const handleSubmit = async () => {
             if(what == ''){
                 return;
@@ -27,6 +27,7 @@ const Featured = () => {
             }
           };
           console.log(what);
+          console.log(selectedCity);
          
   return (
     <section className="relative pb-20 xl:pb-32 overflow-hidden">
@@ -69,18 +70,22 @@ const Featured = () => {
         Where
       </label>
       <select
-        className="relative m-0 block flex-auto bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-surface outline-none transition duration-200 ease-in-out placeholder:text-neutral-500"
-        id="inputGroupSelect01"
-        value={selectedCity}
-        onChange={handleChange}
-        >
-        <option value="" disabled>Select your city</option>
-        {city.map(({ id, city: cityName }) => (
-            <option key={id} value={cityName}>
-            {cityName}
-            </option>
-        ))}
-        </select>
+  className="relative m-0 block flex-auto bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-surface outline-none transition duration-200 ease-in-out placeholder:text-neutral-500"
+  id="inputGroupSelect01"
+  onChange={(e) => setSelectedCity(e.target.value)}
+>
+  <option value="">Select your city</option>
+  {city.length > 0 ? (
+    city.map(({ id, city: cityName }) => (
+      <option key={id} value={cityName}>
+        {cityName}
+      </option>
+    ))
+  ) : (
+    <option value="" disabled>No cities available</option>
+  )}
+</select>
+
 
     </div>
               

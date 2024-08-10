@@ -17,10 +17,10 @@ const Page = ({ params }) => {
   }
 
   // Match URL patterns
-  if (slug.length === 2 && slug[0] === 'restaurants-list' && /^[0-9]+$/.test(slug[1])) {
+  if (Array.isArray(slug) && slug.length === 2 && slug[0] === 'restaurants-list' && /^[0-9a-fA-F]{24}$/.test(slug[1])) {
     return (
       <div className="mt-8 md:ml-[320px] top-0">
-        <EditRestaurant />
+        <EditRestaurant id={slug[1]} />
       </div>
     );
   } else if (slug.length === 1 && slug[0] === 'restaurants-list') {

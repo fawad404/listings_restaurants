@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const EditRestaurant = () => {
+const EditRestaurant = ({ id }) => {
+    console.log(id);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");

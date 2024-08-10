@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-// import { signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 //import { signOut } from 'next-auth/react';
 //import { useSession } from 'next-auth/react';
 export default function Navbar({color}) {
@@ -11,21 +11,21 @@ export default function Navbar({color}) {
    
   // console.log(session);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-//   const { data: session, status } = useSession();
+   const { data: session, status } = useSession();
 
-//   useEffect(() => {
-//     if (status === "loading") {
-//       // Show loading state while session status is being fetched
-//       return;
-//     }
+  useEffect(() => {
+    if (status === "loading") {
+      // Show loading state while session status is being fetched
+      return;
+    }
 
-//     if (session) {
-//       // If no session, redirect to sign-in page
-//       setIsLoggedIn(true);
-//     }
-//   }, [session, status]);
+    if (session) {
+      // If no session, redirect to sign-in page
+      setIsLoggedIn(true);
+    }
+  }, [session, status]);
 
  
   return (
@@ -94,7 +94,7 @@ export default function Navbar({color}) {
                  <div className={`relative group inline-block py-3 px-4 text-sm font-semibold text-${color} hover:text-orange-900 border border-gray-200 rounded-md overflow-hidden transition duration-300`} href="/signout">
                  <div className="absolute top-0 right-full w-full h-full bg-orange-900 transform group-hover:translate-x-full group-hover:scale-102 transition duration-500"></div>
                  <span className="relative"
-                //    onClick={signOut}
+                     onClick={signOut}
                  >Sign Out</span>
                </div>
                </>
@@ -130,11 +130,13 @@ export default function Navbar({color}) {
             </ul>
             <div className="py-6 px-5">
               { isLoggedIn && 
-              <Link className="block w-full py-4 px-6 mb-3 text-sm font-semibold text-orange-900 hover:text-white border border-gray-200 hover:bg-orange-900 rounded-md transition duration-200" href="/login"> Sign In</Link>
+              <Link className="block w-full py-4 px-6 mb-3 text-sm font-semibold text-orange-900 hover:text-white border border-gray-200 hover:bg-orange-900 rounded-md transition duration-200" href=""
+                onClick={signOut}>
+                   Sign Out</Link>
               }
 
               { !isLoggedIn && 
-                <Link className="block w-full py-4 px-6 mb-3 text-sm font-semibold text-orange-900 hover:text-white border border-gray-200 hover:bg-orange-900 rounded-md transition duration-200" href="/login"> Sign In</Link>
+                <Link className="block w-full py-4 px-6 mb-3 text-sm font-semibold text-orange-900 hover:text-white border border-gray-200 hover:bg-orange-900 rounded-md transition duration-200" href="/signin"> Sign In</Link>
 
               }
               
