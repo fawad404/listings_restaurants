@@ -83,7 +83,7 @@ export default function Home() {
             }
           },
           async (error) => {
-            setError("Unable to retrieve your location. Please allow location access.");
+            //setError("Unable to retrieve your location. Please allow location access.");
 
             // Call fallback endpoint if location access is denied
             try {
