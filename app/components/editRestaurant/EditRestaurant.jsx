@@ -1,14 +1,39 @@
+
 "use client";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const EditRestaurant = ({ id }) => {
-    console.log(id);
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
-  const [website, setWebsite] = useState("");
+  const [data, setData] = useState({
+    name: "",
+    address: "",
+    phone: "",
+    website: "",
+    service: "",
+    tags: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    restaurantImg: "",
+  });
   const [geolocation, setGeolocation] = useState({ lat: null, lon: null });
+  const router = useRouter();
 
+  // Fetch restaurant data on component mount or when `id` changes
+  useEffect(() => {
+    const getRestaurant = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant/${id}`);
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    getRestaurant();
+  }, [id]);
+
+  // Fetch geolocation on component mount
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -22,21 +47,19 @@ const EditRestaurant = ({ id }) => {
     }
   }, []);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(geolocation);
 
     const restaurantData = {
-      name,
-      address,
-      phone,
-      website,
+      ...data,
       geolocation,
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/addrestaurant", {
-        method: "POST",
+      const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant/${id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -45,11 +68,12 @@ const EditRestaurant = ({ id }) => {
 
       if (response.ok) {
         alert("Restaurant added successfully!");
-        const data = await response.json();
-        console.log(data);
-      }else {
+        const result = await response.json();
+        console.log(result);
+       // router.push('/');
+      } else {
         const errorData = await response.json();
-      alert(errorData.error || 'An error occurred');
+        alert(errorData.error || 'An error occurred');
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -96,8 +120,8 @@ const EditRestaurant = ({ id }) => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="Dolla Restaurant"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={data.name}
+                    onChange={(e) => setData(prevData => ({ ...prevData, name: e.target.value }))}
                   />
                 </div>
               </div>
@@ -114,8 +138,8 @@ const EditRestaurant = ({ id }) => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="House# Town USA"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
+                    value={data.address}
+                    onChange={(e) => setData(prevData => ({ ...prevData, address: e.target.value }))}
                   />
                 </div>
               </div>
@@ -132,14 +156,13 @@ const EditRestaurant = ({ id }) => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="+9811111111"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    value={data.phone}
+                    onChange={(e) => setData(prevData => ({ ...prevData, phone: e.target.value }))}
                   />
                 </div>
               </div>
             </div>
           </div>
-
           <div className="py-6 border-b border-coolGray-100">
             <div className="w-full md:w-9/12">
               <div className="flex flex-wrap -m-3">
@@ -151,13 +174,107 @@ const EditRestaurant = ({ id }) => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="restaurant Pro"
-                    value={website}
-                    onChange={(e) => setWebsite(e.target.value)}
+                    value={data.website}
+                    onChange={(e) => setData(prevData => ({ ...prevData, website: e.target.value }))}
                   />
                 </div>
               </div>
             </div>
           </div>
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">Service</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="Service details"
+                    value={data.service}
+                    onChange={(e) => setData(prevData => ({ ...prevData, service: e.target.value }))}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">List of Tags Max 2</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="House# Town USA"
+                    value={data.tags}
+                    onChange={(e) => setData(prevData => ({ ...prevData, tags: e.target.value }))}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">City</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="House# Town USA"
+                    value={data.city}
+                    onChange={(e) => setData(prevData => ({ ...prevData, city: e.target.value }))}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">State</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="House# Town USA"
+                    value={data.state}
+                    onChange={(e) => setData(prevData => ({ ...prevData, state: e.target.value }))}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">Zip Code</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="House# Town USA"
+                    value={data.zipCode}
+                    onChange={(e) => setData(prevData => ({ ...prevData, zipCode: e.target.value }))}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
         </div>
       </div>
     </section>

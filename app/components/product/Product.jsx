@@ -2,11 +2,10 @@
 import Rating from '../ratings/Rating';
 
 const Product = ({ fetchedRestaurants }) => {
-  console.log(fetchedRestaurants ? fetchedRestaurants : []);
-  const lists = [1, 2, 3];
+  console.log(fetchedRestaurants ? fetchedRestaurants : [])
   if(!fetchedRestaurants){
     return <div><h1>Loading Restaurants....</h1></div>
-  }else{
+  } else {
     return (
       <section className="relative py-20 md:py-32 overflow-hidden">
         <div className="relative container px-4 mx-auto">
