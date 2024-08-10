@@ -52,7 +52,7 @@ const status = 'Not';
                   </thead>
                   <tbody>
                   { restaurants.map((data) => (
-                    <tr className="text-xs bg-gray-50" >
+                    <tr className="text-xs bg-gray-50" key={data._id} >
                       <td className="py-5 px-6 font-medium">{data.name}</td>
                       <td className="font-medium">{data.website}</td>
                       <td className="font-medium">{data.phone}</td>
