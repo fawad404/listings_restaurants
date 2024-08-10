@@ -4,9 +4,16 @@ import { useState, useEffect } from "react";
 
 const AddRestaurant = () => {
   const [name, setName] = useState("");
+  const [restaurantType, setRestaurantType] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
+  const [service, setService] = useState("");
+  const [tags, setTags] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [restaurantImg, setRestaurantImg] = useState("");
   const [geolocation, setGeolocation] = useState({ lat: null, lon: null });
   const router = useRouter();
   // console.log(process.env.NEXT_PUBLIC_WEB_URL);
@@ -34,6 +41,12 @@ const AddRestaurant = () => {
       phone,
       website,
       geolocation,
+      service,
+      tags,
+      city,
+      state,
+      zipCode,
+      restaurantImg
     };
 
     try {
@@ -107,6 +120,25 @@ const AddRestaurant = () => {
               </div>
             </div>
           </div>
+
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">Type of Restaurant</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="House# Town USA"
+                    value={address}
+                    onChange={(e) => setRestaurantType(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="py-6 border-b border-coolGray-100">
             <div className="w-full md:w-9/12">
               <div className="flex flex-wrap -m-3">
@@ -162,6 +194,101 @@ const AddRestaurant = () => {
               </div>
             </div>
           </div>
+
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">Service</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="House# Town USA"
+                    value={address}
+                    onChange={(e) => setService(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">List of Tags Max 2</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="House# Town USA"
+                    value={address}
+                    onChange={(e) => setTags(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">City</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="House# Town USA"
+                    value={address}
+                    onChange={(e) => setCity(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">State</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="House# Town USA"
+                    value={address}
+                    onChange={(e) => setState(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">Zip Code</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="House# Town USA"
+                    value={address}
+                    onChange={(e) => setZipCode(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
         </div>
       </div>
     </section>

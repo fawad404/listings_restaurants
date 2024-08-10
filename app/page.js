@@ -1,54 +1,158 @@
 "use client";
 import { useEffect, useState } from "react";
-import { fetchData } from "./utilis/getData";
 import Product from "./components/product/Product";
 import Featured from "./components/featured/Featured";
 import { city } from "./utilis/db";
 import Navbar from "./components/navbar/Navbar";
+import { fetchData } from "./utilis/getData"; // Ensure you have this utility
+
 export default function Home() {
-  const [data, setData] = useState(null); // Changed initial state to null
+  const [data, setData] = useState(null);
+  const [restaurants, setRestaurants] = useState([]);
+  const [location, setLocation] = useState(null);
+  const [error, setError] = useState(null);
+
+  // useEffect(() => {
+  //   // Function to get user location
+  //   const getUserLocation = () => {
+  //     if (navigator.geolocation) {
+  //       navigator.geolocation.getCurrentPosition(
+  //         (position) => {
+  //           const { latitude, longitude } = position.coords;
+  //           setLocation({ latitude, longitude });
+  //         },
+  //         (error) => {
+  //           setError("Unable to retrieve your location. Please allow location access.");
+  //         }
+  //       );
+  //     } else {
+  //       setError("Geolocation is not supported by this browser.");
+  //     }
+  //   };
+
+  //   // Fetch restaurant data
+  //   const fetchRestaurantsData = async () => {
+  //     try {
+  //       const res = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant`);
+        
+  //       if (!res.ok) {
+  //         throw new Error(`HTTP error! Status: ${res.status}`);
+  //       }
+        
+  //       const data = await res.json();
+  //       setRestaurants(data);
+  //     } catch (error) {
+  //       console.error('Failed to fetch restaurant data:', error);
+  //     }
+  //   };
+
+  //   // Call functions
+  //   getUserLocation();
+  //   fetchRestaurantsData();
+  // }, []);
 
   useEffect(() => {
-    const fetchDataAsync = async () => {
-      const result = await fetchData();
-      setData(result);
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            setLocation({ latitude, longitude });
+
+            // Make API request to fetch restaurants based on location
+            try {
+              const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/restaurants`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  latitude,
+                  longitude,
+                  range: 1 // Range in kilometers
+                }),
+              });
+
+              if (response.ok) {
+                const data = await response.json();
+                setRestaurants(data);
+                console.log(data);
+              } else {
+                setError('Failed to fetch restaurants.');
+              }
+            } catch (error) {
+              setError('An error occurred while fetching restaurants.');
+            }
+          },
+          async (error) => {
+            setError("Unable to retrieve your location. Please allow location access.");
+
+            // Call fallback endpoint if location access is denied
+            try {
+              const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant`);
+              if (response.ok) {
+                const data = await response.json();
+                setRestaurants(data);
+              } else {
+                setError('Failed to fetch fallback restaurants.');
+              }
+            } catch (error) {
+              setError('An error occurred while fetching fallback restaurants.');
+            }
+          }
+        );
+      } else {
+        setError("Geolocation is not supported by this browser.");
+
+        // Call fallback endpoint if geolocation is not supported
+      }
     };
 
-    fetchDataAsync();
+    getUserLocation();
   }, []);
+  useEffect(() => {
+    if (location) {
+      console.log('User location:', location);
+    }
+  }, [location]);
 
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/query?what=Sushi&location=Tokyo"); // Replace with your API endpoint
-      const result = await response.json();
-      console.log(result);
-      setData(result);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+  const handleSearch = async (what, city) => {
+    if(what !=='' && city ===''){
+      console.log(what, city);
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/query?what=${what}`);
+        const result = await response.json();
+        console.log(result);
+        setRestaurants(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+
+    } else if(what !=='' && city !== ''){
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/query?what=${what}&location=${city}`);
+        const result = await response.json();
+        console.log(result);
+        setRestaurants(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
   };
-  console.log(city);
+ 
+
   return (
     <>
-    
-    <Featured />
-    <Product />
+      <Featured onSearch={handleSearch} />
+      {error && 
+      <div><h1>{error}</h1></div>
+      }
+      {restaurants && <Product fetchedRestaurants={restaurants} />}
+      {data && (
+        <div>
+          {data.map((item) => (
+            <h1 key={item.id}>{item.name}</h1>
+          ))}
+        </div>
+      )}
     </>
-    // <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      
-    
-     
-
-    //   <input className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outsline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value="food name" />
-    //  <button onClick={handleSubmit}>submit</button>
-
-    // {data ? (
-    //     data.map((item) => (
-    //       <h1 key={item.id}>{item.name}</h1>
-    //     ))
-    //   ) : (
-    //     <h1>Loading...</h1>
-    //   )}
-    // </main>
   );
 }

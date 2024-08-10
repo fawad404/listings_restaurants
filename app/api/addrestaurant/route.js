@@ -9,7 +9,7 @@ export const GET = async (req) => {
       await connectToDB();
   
       // Query the database to get all users
-      const restaurants = await Restaurant.find({}).lean(); // Use lean() to get plain JavaScript objects
+      const restaurants = await Restaurant.find({}).lean().limit(4); // Use lean() to get plain JavaScript objects
   
       // Return the users as a JSON response
       return NextResponse.json(restaurants);
@@ -24,7 +24,7 @@ export const POST = async (req) => {
   try {
     // Parse the request body
     const body = await req.json();
-    const { name, address, phone, website, geolocation } = body;
+    const { name, address, phone, website, geolocation, service, tags, city, state, zipCode, restaurantImg } = body;
 
     // Check if all required fields are provided
     if (!name || !address || !phone || !website || !geolocation) {
@@ -53,6 +53,12 @@ export const POST = async (req) => {
       phone,
       website,
       geolocation,
+      service,
+      tags,
+      city,
+      state,
+      zipCode,
+      restaurantImg,
     });
 
     // Save the restaurant to the database

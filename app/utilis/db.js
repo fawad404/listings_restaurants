@@ -9,7 +9,7 @@ export const restaurants = [
     {
       id: 2,
       name: 'Pizza Palace',
-      food: 'Pizza',
+      food: 'Sushi',
       service: 'Takeaway',
       location: 'New York, USA'
     },
@@ -46,7 +46,7 @@ export const restaurants = [
   export const city = [
     {
       id: 1,
-      city: "faisalabad",
+      city: "Tokyo",
     },
     {
       id: 2,

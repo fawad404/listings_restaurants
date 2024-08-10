@@ -27,6 +27,30 @@ const restaurantSchema = new mongoose.Schema({
       required: true,
     },
   },
+  service: {
+    type: String, // You can adjust this type based on how you want to store the service data
+    required: false, // Set to true if you want this field to be required
+  },
+  tags: {
+    type: [String], // Array of strings to store multiple tags
+    required: false, // Set to true if you want this field to be required
+  },
+  city: {
+    type: String,
+    required: false, // Set to true if you want this field to be required
+  },
+  state: {
+    type: String,
+    required: false, // Set to true if you want this field to be required
+  },
+  zipCode: {
+    type: String,
+    required: false, // Set to true if you want this field to be required
+  },
+  restaurantImg: {
+    type: String, // URL or path to the restaurant image
+    required: false, // Set to true if you want this field to be required
+  },
 });
 
 const Restaurant = mongoose.models.Restaurant || mongoose.model('Restaurant', restaurantSchema);
