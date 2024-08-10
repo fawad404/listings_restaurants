@@ -73,8 +73,12 @@ export default function Home() {
 
               if (response.ok) {
                 const data = await response.json();
-                setRestaurants(data);
-                console.log(data);
+                if (data.length === 0) {
+                  setError('Sorry, we donot have restaurants near your location.');
+                } else {
+                  setRestaurants(data);
+                  console.log(data);
+                }
               } else {
                 setError('Failed to fetch restaurants.');
               }
