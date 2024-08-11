@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-
+import { CldUploadWidget } from 'next-cloudinary';
 const AddRestaurant = () => {
   const [name, setName] = useState("");
   const [restaurantType, setRestaurantType] = useState("");
@@ -15,6 +15,7 @@ const AddRestaurant = () => {
   const [zipCode, setZipCode] = useState("");
   const [restaurantImg, setRestaurantImg] = useState("");
   const [geolocation, setGeolocation] = useState({ lat: null, lon: null });
+  const [status, setStatus] = useState("");
   const router = useRouter();
   // console.log(process.env.NEXT_PUBLIC_WEB_URL);
 
@@ -33,6 +34,11 @@ const AddRestaurant = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setStatus("Sending...");
+    if (!name || !address || !phone || !website || !geolocation || !service || !tags || !city || !state || !zipCode || !restaurantImg) {
+      alert('All fields must be filled out');
+      return; // Exit the function if any field is empty
+    }
     console.log(geolocation);
 
     const restaurantData = {
@@ -48,6 +54,7 @@ const AddRestaurant = () => {
       zipCode,
       restaurantImg
     };
+    
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant`, {
@@ -60,6 +67,7 @@ const AddRestaurant = () => {
 
       if (response.ok) {
         alert("Restaurant added successfully!");
+        setStatus("Sent");
         const data = await response.json();
         console.log(data);
         router.push('/');
@@ -95,7 +103,12 @@ const AddRestaurant = () => {
                       onClick={handleSubmit}
                       className="flex flex-wrap justify-center w-full px-4 py-2 bg-green-500 hover:bg-green-600 font-medium text-sm text-white border border-green-500 rounded-md shadow-button"
                     >
-                      <p>Save</p>
+                      {status ? (
+                            <p>{status}</p>
+                      ) : (
+                        <p>Save</p>
+                      )}
+                      
                     </button>
                   </div>
                 </div>
@@ -113,7 +126,6 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="Dolla Restaurant"
-                    value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
@@ -132,7 +144,7 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="House# Town USA"
-                    value={address}
+                    
                     onChange={(e) => setRestaurantType(e.target.value)}
                   />
                 </div>
@@ -150,7 +162,7 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="House# Town USA"
-                    value={address}
+                   
                     onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
@@ -168,7 +180,7 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="+9811111111"
-                    value={phone}
+                   
                     onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
@@ -187,7 +199,7 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="restaurant Pro"
-                    value={website}
+                    
                     onChange={(e) => setWebsite(e.target.value)}
                   />
                 </div>
@@ -206,7 +218,7 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="House# Town USA"
-                    value={address}
+                   
                     onChange={(e) => setService(e.target.value)}
                   />
                 </div>
@@ -224,7 +236,7 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="House# Town USA"
-                    value={address}
+                    
                     onChange={(e) => setTags(e.target.value)}
                   />
                 </div>
@@ -242,7 +254,7 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="House# Town USA"
-                    value={address}
+                    
                     onChange={(e) => setCity(e.target.value)}
                   />
                 </div>
@@ -261,7 +273,7 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="House# Town USA"
-                    value={address}
+                   
                     onChange={(e) => setState(e.target.value)}
                   />
                 </div>
@@ -279,9 +291,39 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="House# Town USA"
-                    value={address}
+                    
                     onChange={(e) => setZipCode(e.target.value)}
                   />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">Upload Image</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                <CldUploadWidget
+      signatureEndpoint="/api/sign-cloudinary-params"
+      onSuccess={(result, { widget }) => {
+        setRestaurantImg(result?.info.public_id); // { public_id, secure_url, etc }
+       
+      }}
+    >
+      {({ open }) => {
+        function handleOnClick() {
+          setRestaurantImg(undefined);
+          open();
+        }
+        return (
+          <button onClick={handleOnClick}>
+            Upload Restaurant Image
+          </button>
+        );
+      }}
+    </CldUploadWidget>
                 </div>
               </div>
             </div>
