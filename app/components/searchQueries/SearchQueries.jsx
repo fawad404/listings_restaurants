@@ -45,7 +45,7 @@ export default function SearchQueries() {
 
 
         {data.map((result) => (
-          <tr className="text-xs bg-gray-50 mt-8">
+          <tr className="text-xs bg-gray-50 mt-8" key={result._id}>
             <td className="py-5 px-6 font-medium">name: {result.what}, location: {result.location}</td>
             <td className="font-medium">
             {formatDistanceToNow(new Date(result.createdAt), { addSuffix: true })}
