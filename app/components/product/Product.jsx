@@ -21,7 +21,7 @@ const Product = ({ fetchedRestaurants }) => {
               <div className="overflow-hidden">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {fetchedRestaurants.map((list) => (
-                    <div key={list._id} className="w-full">
+                    <div key={list._id} className="w-full mb-8">
                       <a className="group block max-w-sm mx-auto md:max-w-none h-full border border-gray-100 bg-white rounded-xl transform hover:scale-105 transition duration-500" href="#">
                         {/* <div className="flex items-center justify-between px-4 py-5">
                           <span className="text-sm">@fawad_ui</span>
@@ -29,7 +29,7 @@ const Product = ({ fetchedRestaurants }) => {
                         </div> */}
                         <div className="h-55">
                         <CldImage
-                      width="300"
+                      width="400"
                       height="72"
                       src={list.restaurantImg ? list.restaurantImg : ''}
                       sizes="100vw"
