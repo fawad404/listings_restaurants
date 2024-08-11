@@ -46,7 +46,7 @@ export default function UsersList() {
                   </thead>
                   <tbody>
                   { data.map((data) => (
-                    <tr className="text-xs bg-gray-50" >
+                    <tr className="text-xs bg-gray-50" key={data._id}>
                       <td className="py-5 px-6 font-medium">{data.username}</td>
                       <td className="font-medium">{data.email}</td>
                       <td>
