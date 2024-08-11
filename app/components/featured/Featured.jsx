@@ -7,11 +7,34 @@ const Featured = ({ onSearch }) => {
   const [selectedCity, setSelectedCity] = useState('');
   const [what, setWhat] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (what === '') {
       return;
     }
+    const restaurantData = {
+      what,
+      location: selectedCity,
+    };
     console.log(what, selectedCity);
+    
+        try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/searchQueries`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(restaurantData),
+      });
+
+      if (response.ok) {
+        alert("Query added successfully!");
+        
+      }else {
+      alert(errorData.error || 'An error occurred');
+      }
+    } catch (error) {
+      console.error("Error submitting Query:", error);
+    }
     onSearch(what, selectedCity);
   };
 

@@ -4,34 +4,31 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function UsersList() {
-  // Debug: Check what `user` contains
- 
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchUsers = async() => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/getUsers`);
 
-  // Initialize state correctly based on `user` type
-//   const [users, setUsers] = useState([]);
-
-//   // Debug: Check initial state
-//   useEffect(() => {
-//     const fetchUserData = async () => {
-//   try {
-//     // Encode the email to handle special characters
-   
-//     const res = await fetch(`/api/login`);
-    
-//     if (!res.ok) {
-//       throw new Error(`HTTP error! Status: ${res.status}`);
-//     }
-    
-//     const data = await res.json();
-//     console.log(data);
-//     setUsers(data);
-//   } catch (error) {
-//     console.error('Failed to fetch user data:', error);
-//   }
-// };
-// fetchUserData();
-
-// },[]);
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          setData(data);
+          // if (data.length === 0) {
+          //   setError('Sorry, we donot have restaurants near your location.');
+          // } else {
+          //   setRestaurants(data);
+          //   console.log(data);
+          // }
+        } else {
+          setError('Failed to fetch users.');
+        }
+      } catch (error) {
+        setError('An error occurred while fetching users.');
+      }
+    }
+    fetchUsers();
+  }, []);
 
     return (
       <section className="py-8 md:ml-[320px] mt-8">
@@ -44,16 +41,14 @@ export default function UsersList() {
                     <tr className="text-xs text-gray-500 text-left">
                       <th className="pl-6 pb-3 font-medium">Username</th>
                       <th className="pb-3 font-medium">Email</th>
-                      <th className="pb-3 font-medium">Phone</th>
                       <th className="pb-3 font-medium">Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                  {/* { users.map((data) => ( */}
+                  { data.map((data) => (
                     <tr className="text-xs bg-gray-50" >
-                      <td className="py-5 px-6 font-medium">fawad</td>
-                      <td className="font-medium">fawad@gmail.com</td>
-                      <td className="font-medium">+9323232323</td>
+                      <td className="py-5 px-6 font-medium">{data.username}</td>
+                      <td className="font-medium">{data.email}</td>
                       <td>
                         <Link href={`/admin/restaurants-list/32323232`}>
                         <span
@@ -66,7 +61,7 @@ export default function UsersList() {
                           </Link>
                       </td>
                     </tr>
-                {/* ))} */}
+                 ))}
                   </tbody>
                 </table>
               </div>
