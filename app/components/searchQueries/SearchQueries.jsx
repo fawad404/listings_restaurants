@@ -1,22 +1,33 @@
 "use client";
 import { useState, useEffect } from "react";
-
+import { formatDistanceToNow } from 'date-fns';
 export default function SearchQueries() {
- // const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
-//   useEffect(() => {
-//     // Ensure `user` is always an array
-//     if (Array.isArray(user)) {
-//       setData(user);
-//     } else if (user && typeof user === 'object') {
-//       // If `user` is a single object, wrap it in an array
-//       setData([user]);
-//     } else {
-//       // Handle cases where `user` is neither an array nor an object
-//       console.error("Expected user to be an array or an object, received:", user);
-//       setData([]);
-//     }
-//   }, [user]);
+  useEffect(() => {
+    const fetchSeearches = async() => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/searchQueries`);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          setData(data);
+          // if (data.length === 0) {
+          //   setError('Sorry, we donot have restaurants near your location.');
+          // } else {
+          //   setRestaurants(data);
+          //   console.log(data);
+          // }
+        } else {
+          setError('Failed to fetch restaurants.');
+        }
+      } catch (error) {
+        setError('An error occurred while fetching restaurants.');
+      }
+    }
+    fetchSeearches();
+  }, []);
   return (
   
       
@@ -31,15 +42,17 @@ export default function SearchQueries() {
             </tr>
         </thead>
         <tbody>
-        {/* {data.map((result) => ( */}
 
 
-          <tr className="text-xs bg-gray-50">
-            <td className="py-5 px-6 font-medium">name: sushi, location: faisalabad</td>
-            <td className="font-medium">09/04/2021</td>
+        {data.map((result) => (
+          <tr className="text-xs bg-gray-50 mt-8">
+            <td className="py-5 px-6 font-medium">name: {result.what}, location: {result.location}</td>
+            <td className="font-medium">
+            {formatDistanceToNow(new Date(result.createdAt), { addSuffix: true })}
+            </td>
           </tr>
-        {/* //   ))} */}
-        </tbody>
+         ))}
+         </tbody>
       </table>
     </div>
   
