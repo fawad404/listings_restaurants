@@ -2,29 +2,29 @@ import Restaurant from "@/app/utilis/model/restaurant";
 import { connectToDB } from "@/app/utilis/mongodb";
 import { NextResponse } from "next/server";
 
-
 export const GET = async (req) => {
-    try {
-      // Connect to the database
-      await connectToDB();
-  
-      // Query the database to get all users
-      const restaurants = await Restaurant.find({}).lean().limit(4); // Use lean() to get plain JavaScript objects
-  
-      // Return the users as a JSON response
-      return NextResponse.json(restaurants);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
-    }
-  };
+  try {
+    // Connect to the database
+    await connectToDB();
+
+    // Query the database to get only verified restaurants
+    const restaurants = await Restaurant.find({ verified: true }).lean().limit(4);
+
+    // Return the verified restaurants as a JSON response
+    return NextResponse.json(restaurants);
+  } catch (error) {
+    console.error('Error fetching restaurants:', error);
+    return NextResponse.json({ error: 'Failed to fetch restaurants' }, { status: 500 });
+  }
+};
+
 
 
 export const POST = async (req) => {
   try {
     // Parse the request body
     const body = await req.json();
-    const { name, address, phone, website, geolocation, service, tags, city, state, zipCode, restaurantImg } = body;
+    const { name, address, phone, website, geolocation, service, tags, city, state, zipCode, type, restaurantImg } = body;
 
     // Check if all required fields are provided
     if (!name || !address || !phone || !website || !geolocation) {
@@ -58,6 +58,7 @@ export const POST = async (req) => {
       city,
       state,
       zipCode,
+      type,
       restaurantImg,
     });
 

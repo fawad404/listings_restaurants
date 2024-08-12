@@ -1,4 +1,5 @@
 
+import Link from 'next/link';
 import Rating from '../ratings/Rating';
 import { CldImage } from "next-cloudinary";
 const Product = ({ fetchedRestaurants }) => {
@@ -22,7 +23,8 @@ const Product = ({ fetchedRestaurants }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {fetchedRestaurants.map((list) => (
                     <div key={list._id} className="w-full mb-8">
-                      <a className="group block max-w-sm mx-auto md:max-w-none h-full border border-gray-100 bg-white rounded-xl transform hover:scale-105 transition duration-500" href="#">
+                      <Link className="group block max-w-sm mx-auto md:max-w-none h-full border border-gray-100 bg-white rounded-xl transform hover:scale-105 transition duration-500" 
+                      href={`/listings/${list._id}`}>
                         {/* <div className="flex items-center justify-between px-4 py-5">
                           <span className="text-sm">@fawad_ui</span>
                           <img src="https://static.shuffle.dev/components/preview/2f808e47-944e-42cf-b821-2358251e0600/assets/public/saturn-assets/images/instagram-photos/icon-instagram.svg" alt="" />
@@ -57,7 +59,7 @@ const Product = ({ fetchedRestaurants }) => {
                             <span className="text-sm text-gray-500">...</span>
                           </div>
                         </div>
-                      </a>
+                      </Link>
                     </div>
                   ))}
                 </div>

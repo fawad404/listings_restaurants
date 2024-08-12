@@ -51,6 +51,14 @@ const restaurantSchema = new mongoose.Schema({
     type: String, // URL or path to the restaurant image
     required: false, // Set to true if you want this field to be required
   },
+  type: {
+    type: String, // URL or path to the restaurant image
+    required: false, // Set to true if you want this field to be required
+  },
+  verified: {
+    type: Boolean, // URL or path to the restaurant image
+    default: false, // Set to true if you want this field to be required
+  },
 });
 
 const Restaurant = mongoose.models.Restaurant || mongoose.model('Restaurant', restaurantSchema);

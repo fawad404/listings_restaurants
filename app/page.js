@@ -67,7 +67,7 @@ export default function Home() {
                 body: JSON.stringify({
                   latitude,
                   longitude,
-                  range: 1 // Range in kilometers
+                  range: 10 // Range in kilometers
                 }),
               });
 

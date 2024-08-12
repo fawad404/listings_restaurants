@@ -2,7 +2,22 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { CldUploadWidget } from 'next-cloudinary';
+import { useSession } from "next-auth/react";
 const AddRestaurant = () => {
+  const { data: session, status } = useSession();
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  useEffect(() => {
+    if (status === "loading") {
+      return;
+    }
+
+    if (!session) {
+      router.push('/signin');
+    } else {
+      setLoading(false);
+    }
+  }, [session, status, router]);
   const [name, setName] = useState("");
   const [restaurantType, setRestaurantType] = useState("");
   const [address, setAddress] = useState("");
@@ -15,8 +30,7 @@ const AddRestaurant = () => {
   const [zipCode, setZipCode] = useState("");
   const [restaurantImg, setRestaurantImg] = useState("");
   const [geolocation, setGeolocation] = useState({ lat: null, lon: null });
-  const [status, setStatus] = useState("");
-  const router = useRouter();
+  const [statuss, setStatuss] = useState("");
   // console.log(process.env.NEXT_PUBLIC_WEB_URL);
 
   useEffect(() => {
@@ -34,8 +48,8 @@ const AddRestaurant = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus("Sending...");
-    if (!name || !address || !phone || !website || !geolocation || !service || !tags || !city || !state || !zipCode || !restaurantImg) {
+    setStatuss("Sending...");
+    if (!name || !address || !phone || !website || !geolocation || !service || !tags || !city || !state || !zipCode || !restaurantType || !restaurantImg) {
       alert('All fields must be filled out');
       return; // Exit the function if any field is empty
     }
@@ -52,6 +66,7 @@ const AddRestaurant = () => {
       city,
       state,
       zipCode,
+      type: restaurantType,
       restaurantImg
     };
     
@@ -67,7 +82,7 @@ const AddRestaurant = () => {
 
       if (response.ok) {
         alert("Restaurant added successfully!");
-        setStatus("Sent");
+        setStatuss("Sent");
         const data = await response.json();
         console.log(data);
         router.push('/');
@@ -103,8 +118,8 @@ const AddRestaurant = () => {
                       onClick={handleSubmit}
                       className="flex flex-wrap justify-center w-full px-4 py-2 bg-green-500 hover:bg-green-600 font-medium text-sm text-white border border-green-500 rounded-md shadow-button"
                     >
-                      {status ? (
-                            <p>{status}</p>
+                      {statuss ? (
+                            <p>{statuss}</p>
                       ) : (
                         <p>Save</p>
                       )}

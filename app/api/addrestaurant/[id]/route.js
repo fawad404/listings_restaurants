@@ -38,7 +38,7 @@ export const GET = async (req, { params }) => {
   
       // Parse the request body
       const body = await req.json();
-      const { name, address, phone, website, service, tags, city, state, zipCode, restaurantImg } = body;
+      const { name, address, phone, website, service, tags, city, state, zipCode, restaurantImg, verified } = body;
       const { id } = params;
   
       // Connect to the database
@@ -61,6 +61,7 @@ export const GET = async (req, { params }) => {
       restaurant.state = state || restaurant.state;
       restaurant.zipCode = zipCode || restaurant.zipCode;
       restaurant.restaurantImg = restaurantImg || restaurant.restaurantImg;
+      restaurant.verified = verified || restaurant.verified;
   
       // Save the updated restaurant
       const updatedRestaurant = await restaurant.save();
