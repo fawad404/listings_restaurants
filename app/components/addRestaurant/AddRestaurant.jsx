@@ -3,10 +3,13 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { CldUploadWidget } from 'next-cloudinary';
 import { useSession } from "next-auth/react";
+
 const AddRestaurant = () => {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
+  const [isLocationAvailable, setIsLocationAvailable] = useState(false);
   const router = useRouter();
+
   useEffect(() => {
     if (status === "loading") {
       return;
@@ -18,6 +21,7 @@ const AddRestaurant = () => {
       setLoading(false);
     }
   }, [session, status, router]);
+
   const [name, setName] = useState("");
   const [restaurantType, setRestaurantType] = useState("");
   const [address, setAddress] = useState("");
@@ -31,28 +35,61 @@ const AddRestaurant = () => {
   const [restaurantImg, setRestaurantImg] = useState("");
   const [geolocation, setGeolocation] = useState({ lat: null, lon: null });
   const [statuss, setStatuss] = useState("");
-  // console.log(process.env.NEXT_PUBLIC_WEB_URL);
+  const [hasSelected, setHasSelected] = useState(false);
+  const [hasServiceSelected, setHasServiceSelected] = useState(false);
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setRestaurantType(value);
+    if (value !== '') {
+      setHasSelected(true);
+    }
+  };
+
+  const handleServiceChange = (e) => {
+    const value = e.target.value;
+    setService(value);
+    if (value !== '') {
+      setHasServiceSelected(true);
+    }
+  };
 
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setGeolocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        });
-      });
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setGeolocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+          setIsLocationAvailable(true); // Set to true when location is successfully retrieved
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          setGeolocation({ lat: null, lon: null });
+          setIsLocationAvailable(false); // Set to false if there is an error
+        }
+      );
     } else {
       console.error("Geolocation is not supported by this browser.");
+      setGeolocation({ lat: null, lon: null });
+      setIsLocationAvailable(false);
     }
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatuss("Sending...");
-    if (!name || !address || !phone || !website || !geolocation || !service || !tags || !city || !state || !zipCode || !restaurantType || !restaurantImg) {
+    if (!name || !address || !phone || !website || !service || !tags || !city || !state || !zipCode || !restaurantType || !restaurantImg) {
       alert('All fields must be filled out');
-      return; // Exit the function if any field is empty
+      return;
     }
+
+    if (!isLocationAvailable || geolocation.lat === null || geolocation.lon === null) {
+      alert('Kindly allow location access to add your restaurant');
+      return;
+    }
+
+    setStatuss("Sending...");
     console.log(geolocation);
 
     const restaurantData = {
@@ -69,7 +106,6 @@ const AddRestaurant = () => {
       type: restaurantType,
       restaurantImg
     };
-    
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant`, {
@@ -86,10 +122,9 @@ const AddRestaurant = () => {
         const data = await response.json();
         console.log(data);
         router.push('/');
-        
-      }else {
+      } else {
         const errorData = await response.json();
-      alert(errorData.error || 'An error occurred');
+        alert(errorData.error || 'An error occurred');
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -119,11 +154,10 @@ const AddRestaurant = () => {
                       className="flex flex-wrap justify-center w-full px-4 py-2 bg-green-500 hover:bg-green-600 font-medium text-sm text-white border border-green-500 rounded-md shadow-button"
                     >
                       {statuss ? (
-                            <p>{statuss}</p>
+                        <p>{statuss}</p>
                       ) : (
                         <p>Save</p>
                       )}
-                      
                     </button>
                   </div>
                 </div>
@@ -155,17 +189,20 @@ const AddRestaurant = () => {
                   <p className="text-sm text-coolGray-800 font-semibold">Type of Restaurant</p>
                 </div>
                 <div className="w-full md:flex-1 p-3">
-                  <input
+                  <select
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
-                    type="text"
-                    placeholder="House# Town USA"
-                    
-                    onChange={(e) => setRestaurantType(e.target.value)}
-                  />
+                    value={restaurantType}
+                    onChange={handleChange}
+                  >
+                    {!hasSelected && <option value="" disabled>Select a type</option>}
+                    <option value="food-truck">Food Truck</option>
+                    <option value="restaurant">Restaurant</option>
+                  </select>
                 </div>
               </div>
             </div>
           </div>
+
           <div className="py-6 border-b border-coolGray-100">
             <div className="w-full md:w-9/12">
               <div className="flex flex-wrap -m-3">
@@ -176,14 +213,14 @@ const AddRestaurant = () => {
                   <input
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
-                    placeholder="House# Town USA"
-                   
+                    placeholder="1234 Main St"
                     onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
               </div>
             </div>
           </div>
+
           <div className="py-6 border-b border-coolGray-100">
             <div className="w-full md:w-9/12">
               <div className="flex flex-wrap -m-3">
@@ -195,7 +232,6 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="+9811111111"
-                   
                     onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
@@ -213,8 +249,7 @@ const AddRestaurant = () => {
                   <input
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
-                    placeholder="restaurant Pro"
-                    
+                    placeholder="yourRestaurant.com"
                     onChange={(e) => setWebsite(e.target.value)}
                   />
                 </div>
@@ -229,17 +264,22 @@ const AddRestaurant = () => {
                   <p className="text-sm text-coolGray-800 font-semibold">Service</p>
                 </div>
                 <div className="w-full md:flex-1 p-3">
-                  <input
+                  <select
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
-                    type="text"
-                    placeholder="House# Town USA"
-                   
-                    onChange={(e) => setService(e.target.value)}
-                  />
+                    value={service}
+                    onChange={handleServiceChange}
+                  >
+                    {!hasServiceSelected && <option value="" disabled>Select a type</option>}
+                    <option value="dine-in">Dine in</option>
+                    <option value="take-out">Take out</option>
+                    <option value="buffet">Buffet</option>
+                    <option value="catering">Catering</option>
+                  </select>
                 </div>
               </div>
             </div>
           </div>
+
           <div className="py-6 border-b border-coolGray-100">
             <div className="w-full md:w-9/12">
               <div className="flex flex-wrap -m-3">
@@ -250,14 +290,14 @@ const AddRestaurant = () => {
                   <input
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
-                    placeholder="House# Town USA"
-                    
+                    placeholder="must have 2 tags with space between eg. halal parking"
                     onChange={(e) => setTags(e.target.value)}
                   />
                 </div>
               </div>
             </div>
           </div>
+
           <div className="py-6 border-b border-coolGray-100">
             <div className="w-full md:w-9/12">
               <div className="flex flex-wrap -m-3">
@@ -268,8 +308,7 @@ const AddRestaurant = () => {
                   <input
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
-                    placeholder="House# Town USA"
-                    
+                    placeholder="Los Angeles"
                     onChange={(e) => setCity(e.target.value)}
                   />
                 </div>
@@ -287,14 +326,14 @@ const AddRestaurant = () => {
                   <input
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
-                    placeholder="House# Town USA"
-                   
+                    placeholder="Louisiana"
                     onChange={(e) => setState(e.target.value)}
                   />
                 </div>
               </div>
             </div>
           </div>
+
           <div className="py-6 border-b border-coolGray-100">
             <div className="w-full md:w-9/12">
               <div className="flex flex-wrap -m-3">
@@ -305,14 +344,14 @@ const AddRestaurant = () => {
                   <input
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
-                    placeholder="House# Town USA"
-                    
+                    placeholder="38080"
                     onChange={(e) => setZipCode(e.target.value)}
                   />
                 </div>
               </div>
             </div>
           </div>
+
           <div className="py-6 border-b border-coolGray-100">
             <div className="w-full md:w-9/12">
               <div className="flex flex-wrap -m-3">
@@ -320,31 +359,31 @@ const AddRestaurant = () => {
                   <p className="text-sm text-coolGray-800 font-semibold">Upload Image</p>
                 </div>
                 <div className="w-full md:flex-1 p-3">
-                <CldUploadWidget
-      signatureEndpoint="/api/sign-cloudinary-params"
-      onSuccess={(result, { widget }) => {
-        setRestaurantImg(result?.info.public_id); // { public_id, secure_url, etc }
-       
-      }}
-    >
-      {({ open }) => {
-        function handleOnClick() {
-          setRestaurantImg(undefined);
-          open();
-        }
-        return (
-          <button onClick={handleOnClick}>
-            Upload Restaurant Image
-          </button>
-        );
-      }}
-    </CldUploadWidget>
+                  <CldUploadWidget
+                    signatureEndpoint="/api/sign-cloudinary-params"
+                    onSuccess={(result, { widget }) => {
+                      setRestaurantImg(result?.info.public_id);
+                    }}
+                  >
+                    {({ open }) => {
+                      function handleOnClick() {
+                        setRestaurantImg(undefined);
+                        open();
+                      }
+                      return (
+                        <button
+                          className="text-blue-800 font-semibold"
+                          onClick={handleOnClick}
+                        >
+                          Click to Upload Image
+                        </button>
+                      );
+                    }}
+                  </CldUploadWidget>
                 </div>
               </div>
             </div>
           </div>
-
-
 
         </div>
       </div>
