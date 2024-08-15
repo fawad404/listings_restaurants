@@ -144,7 +144,6 @@ export default function Home() {
 
   return (
     <>
-      <Navbar color={"white"} />
       <Featured onSearch={handleSearch} />
       {restaurants && (
         <Product fetchedRestaurants={restaurants} />
