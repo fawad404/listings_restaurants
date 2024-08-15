@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from 'react';
 import { city } from '@/app/utilis/db';
-import Navbar from '../navbar/Navbar';
 
 const Featured = ({ onSearch }) => {
   const [selectedCity, setSelectedCity] = useState('');
@@ -42,7 +41,6 @@ const Featured = ({ onSearch }) => {
 
   return (
     <section className="relative pb-20 xl:pb-32 overflow-hidden">
-      <Navbar color={"white"} />
       <img className="absolute bottom-0 left-0 w-full h-full object-cover brightness-50" src="https://restaurantpro.listingprowp.com/wp-content/uploads/2017/04/heroheader-restpro-1920x600_01_opt.jpg" alt="" />
       <nav className="py-6 mb-12 md:mb-24 bg-white">
         <div className="container px-4 mx-auto removed"></div>

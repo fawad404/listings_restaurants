@@ -2,9 +2,8 @@
 import { useEffect, useState } from "react";
 import Product from "./components/product/Product";
 import Featured from "./components/featured/Featured";
-import { city } from "./utilis/db";
 import Navbar from "./components/navbar/Navbar";
-import { fetchData } from "./utilis/getData"; // Ensure you have this utility
+import Footer from "./components/footer/Footer";
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -145,10 +144,12 @@ export default function Home() {
 
   return (
     <>
+      <Navbar color={"white"} />
       <Featured onSearch={handleSearch} />
       {restaurants && (
         <Product fetchedRestaurants={restaurants} />
       )}
+      <Footer />
       {error && (
        
         
