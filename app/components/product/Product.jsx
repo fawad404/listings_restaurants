@@ -24,7 +24,7 @@ const Product = ({ fetchedRestaurants }) => {
                   {fetchedRestaurants.map((list) => (
                     <div key={list._id} className="w-full mb-8">
                       <Link className="group block max-w-sm mx-auto md:max-w-none h-full border border-gray-100 bg-white rounded-xl transform hover:scale-105 transition duration-500" 
-                      href={`/listings/${list._id}`}>
+                      href={`/listings/${list.slug}`}>
                         {/* <div className="flex items-center justify-between px-4 py-5">
                           <span className="text-sm">@fawad_ui</span>
                           <img src="https://static.shuffle.dev/components/preview/2f808e47-944e-42cf-b821-2358251e0600/assets/public/saturn-assets/images/instagram-photos/icon-instagram.svg" alt="" />

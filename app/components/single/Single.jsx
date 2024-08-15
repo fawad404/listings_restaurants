@@ -5,7 +5,7 @@ import SingleRight from '../singleRight/SingleRight'
 const Single = ({ singleRestaurant }) => {
   console.log(singleRestaurant);
   return (
-    <section className="py-8">
+    <section className="py-0">
   <div className="container px-4 mx-auto">
     <div className="flex flex-wrap -mx-4 -mb-8">
       <div className="w-full md:w-2/3 px-4 mb-8">

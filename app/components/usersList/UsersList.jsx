@@ -12,7 +12,7 @@ export default function UsersList() {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
+         // console.log(data);
           setData(data);
           // if (data.length === 0) {
           //   setError('Sorry, we donot have restaurants near your location.');
@@ -41,7 +41,7 @@ export default function UsersList() {
                     <tr className="text-xs text-gray-500 text-left">
                       <th className="pl-6 pb-3 font-medium">Username</th>
                       <th className="pb-3 font-medium">Email</th>
-                      <th className="pb-3 font-medium">Action</th>
+                      <th className="pb-3 font-medium">Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -49,17 +49,7 @@ export default function UsersList() {
                     <tr className="text-xs bg-gray-50" key={data._id}>
                       <td className="py-5 px-6 font-medium">{data.username}</td>
                       <td className="font-medium">{data.email}</td>
-                      <td>
-                        <Link href={`/admin/restaurants-list/32323232`}>
-                        <span
-
-                          className={`inline-block py-1 px-2 text-white rounded-full cursor-pointer bg-green-500
-                            }`}
-                            >
-                          Edit
-                        </span>
-                          </Link>
-                      </td>
+                      <td className="font-medium">{data.isAdmin ? 'Admin' : 'Subscriber'}</td>
                     </tr>
                  ))}
                   </tbody>

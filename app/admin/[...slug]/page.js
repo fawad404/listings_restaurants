@@ -3,27 +3,12 @@ import EditRestaurant from '@/app/components/editRestaurant/EditRestaurant';
 import RestaurantsList from '@/app/components/restaurantsList/RestaurantsList';
 import SearchQueries from '@/app/components/searchQueries/SearchQueries';
 import UsersList from '@/app/components/usersList/UsersList';
-import { useRouter } from 'next/navigation';
-import { useSession } from "next-auth/react";
 import React, { useState, useEffect } from 'react';
 
 const Page = ({ params }) => {
-  const router = useRouter();
-  const [userData, setUserData] = useState(null);
   const slug = params.slug || []; // Ensure slug is an array
-  const { data: session, status } = useSession();
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    if (status === "loading") {
-      return;
-    }
 
-    if (!session) {
-      router.push('/');
-    } else {
-      setLoading(false);
-    }
-  }, [session, status, router]);
+
   // Check if the slug array is available
   if (!slug.length) {
     return null; // Or render a loading state

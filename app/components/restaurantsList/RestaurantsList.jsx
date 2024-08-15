@@ -5,11 +5,16 @@ import { useEffect, useState } from 'react';
 
 export default function RestaurantsList() {
   const [restaurants, setRestaurants] = useState([]);
+  const [filters, setFilters] = useState({
+    verified: '', // empty means no filter, 'true' for verified, 'false' for not verified
+    name: '', // filter by restaurant name
+  });
 
   useEffect(() => {
     const fetchRestaurantsData = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/fetchRestaurants`);
+        const query = new URLSearchParams(filters).toString();
+        const res = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/fetchRestaurants?${query}`);
         
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
@@ -23,7 +28,7 @@ export default function RestaurantsList() {
       }
     };
     fetchRestaurantsData();
-  }, []);
+  }, [filters]);
 
   const togglePaymentStatus = async (id) => {
     const updatedRestaurant = restaurants.find(restaurant => restaurant._id === id);
@@ -31,9 +36,9 @@ export default function RestaurantsList() {
       console.error('Restaurant not found');
       return;
     }
-
-    const newStatus = updatedRestaurant.verified ? "false" : true;
-
+  
+    const newStatus = !updatedRestaurant.verified;
+  
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant/${id}`, {
         method: 'PATCH',
@@ -42,23 +47,76 @@ export default function RestaurantsList() {
         },
         body: JSON.stringify({ verified: newStatus }),
       });
-
+  
+      const responseData = await response.json();
+      console.log('API response:', responseData);
+  
       if (!response.ok) throw new Error('Failed to update restaurant');
-
+  
+      // Update state with new status
       const updatedRestaurants = restaurants.map(restaurant =>
         restaurant._id === id ? { ...restaurant, verified: newStatus } : restaurant
       );
-      alert('Verificaiton changed');
+  
+      alert('Verification status changed successfully');
       setRestaurants(updatedRestaurants);
     } catch (error) {
       console.error('Error:', error);
     }
   };
+  
+  const deleteRestaurant = async (id) => {
+    const confirmDelete = confirm('Are you sure you want to delete this restaurant?');
+    if (!confirmDelete) return;
+  
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant/${id}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) throw new Error('Failed to delete restaurant');
+  
+      // Update the local state to remove the deleted restaurant
+      const updatedRestaurants = restaurants.filter(restaurant => restaurant._id !== id);
+      setRestaurants(updatedRestaurants);
+  
+      alert('Restaurant deleted successfully');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  const handleFilterChange = (e) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [e.target.name]: e.target.value
+    }));
+  };
 
   return (
     <section className="py-8 md:ml-[320px] mt-8">
       <div className="container px-4 mx-auto">
-        <div className="p-4 mb-6 bg-white shadow rounded overflow-x-auto">
+        <div className="p-4 mb-6 bg-white shadow rounded">
+          <div className="mb-4 flex gap-4">
+            <input
+              type="text"
+              name="name"
+              placeholder="Search by name"
+              value={filters.name}
+              onChange={handleFilterChange}
+              className="p-2 border border-gray-300 rounded"
+            />
+            <select
+              name="verified"
+              value={filters.verified}
+              onChange={handleFilterChange}
+              className="p-2 border border-gray-300 rounded"
+            >
+              <option value="">All Statuses</option>
+              <option value="true">Verified</option>
+              <option value="false">Not Verified</option>
+            </select>
+          </div>
           <table className="table-auto w-full">
             <thead>
               <tr className="text-xs text-gray-500 text-left">
@@ -66,6 +124,7 @@ export default function RestaurantsList() {
                 <th className="pb-3 font-medium">Website</th>
                 <th className="pb-3 font-medium">Phone</th>
                 <th className="pb-3 font-medium">Approved</th>
+                <th className="pb-3 font-medium">Action</th>
                 <th className="pb-3 font-medium">Action</th>
               </tr>
             </thead>
@@ -91,6 +150,14 @@ export default function RestaurantsList() {
                         Edit
                       </span>
                     </Link>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => deleteRestaurant(data._id)}
+                      className="inline-block py-1 px-2 text-white rounded-full bg-red-500 cursor-pointer"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

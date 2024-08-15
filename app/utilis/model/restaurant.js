@@ -51,6 +51,10 @@ const restaurantSchema = new mongoose.Schema({
     type: String, // URL or path to the restaurant image
     required: false, // Set to true if you want this field to be required
   },
+  slug: {
+    type: String, // URL or path to the restaurant image
+    required: true, // Set to true if you want this field to be required
+  },
   type: {
     type: String, // URL or path to the restaurant image
     required: false, // Set to true if you want this field to be required

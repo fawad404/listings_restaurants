@@ -3,6 +3,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Navbar from '../components/navbar/Navbar';
+import Footer from '../components/footer/Footer';
 
 export default function Page() {
   const [email, setEmail] = useState('');
@@ -98,6 +99,7 @@ export default function Page() {
           </p>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

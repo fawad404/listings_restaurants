@@ -5,25 +5,26 @@ import { useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 
 const Page = () => {
-  const { data: session, status } = useSession();
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  // const { data: session, status } = useSession();
+  // const [loading, setLoading] = useState(true);
+  // const router = useRouter();
 
-  useEffect(() => {
-    if (status === "loading") {
-      return;
-    }
+  // useEffect(() => {
+  //   if (status === "loading") {
+  //     return;
+  //   }
 
-    if (!session) {
-      router.push('/');
-    } else {
-      setLoading(false);
-    }
-  }, [session, status, router]);
+  //   if (!session) {
+  //     router.push('/');
+  //   } else {
+  //     setLoading(false);
+  //   }
+  // }, [session, status, router]);
 
   return (
     <div>
-      {!loading && <RestaurantsList />}
+      <RestaurantsList />
+      {/* {!loading && <RestaurantsList />} */}
     </div>
   );
 }

@@ -7,7 +7,8 @@ const Featured = ({ onSearch }) => {
   const [selectedCity, setSelectedCity] = useState('');
   const [what, setWhat] = useState('');
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (what === '') {
       return;
     }
@@ -27,7 +28,8 @@ const Featured = ({ onSearch }) => {
       });
 
       if (response.ok) {
-        alert("Query added successfully!");
+        //alert("Query added successfully!");
+        console.log("successfully searched");
         
       }else {
       alert(errorData.error || 'An error occurred');
@@ -50,7 +52,7 @@ const Featured = ({ onSearch }) => {
           <h1 className="font-heading text-2xl xs:text-2xl md:text-3xl xl:text-4xl font-bold text-white mb-8 sm:mb-14">
             <span>Browse Anything! Explore Your city</span>
           </h1>
-          <a className="relative group inline-block w-full sm:w-auto py-4 px-7 mb-24 text-gray-900 font-semibold overflow-hidden" href="#">
+          <div className="relative group inline-block w-full sm:w-auto py-4 px-7 mb-24 text-gray-900 font-semibold overflow-hidden">
             <div className="relative flex flex-col justify-start sm:flex-row">
               <div className="flex items-center space-x-4 bg-white mb-5 md:mb-0 md:border-r-2 md:border-gray-600">
                 <label htmlFor="simple-search" className="flex-shrink-0 px-3 py-1 text-base font-normal text-surface">What</label>
@@ -59,7 +61,7 @@ const Featured = ({ onSearch }) => {
                   type="text"
                   id="simple-search"
                   className="bg-gray-50 outline-none text-gray-900 text-sm block w-full p-2.5"
-                  placeholder="Ex:food, service, bar, hotel"
+                  placeholder="Ex:restaurant, state, zipcode, city"
                   required
                 />
               </div>
@@ -95,7 +97,7 @@ const Featured = ({ onSearch }) => {
                 </button>
               </div>
             </div>
-          </a>
+          </div>
         </div>
       </div>
     </section>

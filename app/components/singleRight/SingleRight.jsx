@@ -4,10 +4,10 @@ import React from 'react'
 const SingleRight = ({ data }) => {
     const tagsArray = data.tags[0].split(' ');
   return (
-    <section className="py-16">
+    <section className="py-8">
   <div className="container px-4 mx-auto">
     <div className="flex flex-wrap -mx-4">
-      <div className="w-full px-4">
+      <div className="w-full px-4 border border-blue-50">
         <div className="py-4 bg-white rounded">
           <div className="px-6 pb-6 border-b border-blue-50">
             <h3 className="text-xl font-bold">Restaurant Information</h3>

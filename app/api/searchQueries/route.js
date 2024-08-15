@@ -4,20 +4,22 @@ import { NextResponse } from "next/server";
 
 
 export const GET = async (req) => {
-    try {
-      // Connect to the database
-      await connectToDB();
-  
-      // Query the database to get all users
-      const searches = await Search.find({}).lean(); // Use lean() to get plain JavaScript objects
-  
-      // Return the users as a JSON response
-      return NextResponse.json(searches);
-    } catch (error) {
-      console.error('Error fetching searches:', error);
-      return NextResponse.json({ error: 'Failed to fetch searches' }, { status: 500 });
-    }
-  };
+  try {
+    // Connect to the database
+    await connectToDB();
+
+    // Query the database to get all searches, sorted in descending order by `_id`
+    const searches = await Search.find({})
+      .sort({ _id: -1 }) // Sort by `_id` in descending order
+      .lean(); // Use lean() to get plain JavaScript objects
+
+    // Return the searches as a JSON response
+    return NextResponse.json(searches);
+  } catch (error) {
+    console.error('Error fetching searches:', error);
+    return NextResponse.json({ error: 'Failed to fetch searches' }, { status: 500 });
+  }
+};
 export const POST = async (req) => {
     try {
       // Parse the request body

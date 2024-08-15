@@ -124,7 +124,7 @@ export default function Home() {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/query?what=${what}`);
         const result = await response.json();
-        console.log(result);
+       // console.log(result);
         setRestaurants(result);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -134,7 +134,7 @@ export default function Home() {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/query?what=${what}&location=${city}`);
         const result = await response.json();
-        console.log(result);
+        //console.log(result);
         setRestaurants(result);
       } catch (error) {
         console.error("Error fetching data:", error);

@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Navbar from '../components/navbar/Navbar';
+import Footer from '../components/footer/Footer';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -138,6 +139,7 @@ export default function Signup() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

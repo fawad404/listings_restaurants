@@ -24,7 +24,7 @@ export const POST = async (req) => {
   try {
     // Parse the request body
     const body = await req.json();
-    const { name, address, phone, website, geolocation, service, tags, city, state, zipCode, type, restaurantImg } = body;
+    const { name, address, phone, website, geolocation, service, tags, city, state, zipCode, type, restaurantImg, slug } = body;
 
     // Check if all required fields are provided
     if (!name || !address || !phone || !website || !geolocation) {
@@ -60,6 +60,7 @@ export const POST = async (req) => {
       zipCode,
       type,
       restaurantImg,
+      slug
     });
 
     // Save the restaurant to the database

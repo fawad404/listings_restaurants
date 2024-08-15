@@ -51,17 +51,17 @@ export const GET = async (req, { params }) => {
       }
   
       // Update the restaurant fields only if they are provided
-      restaurant.name = name || restaurant.name;
-      restaurant.address = address || restaurant.address;
-      restaurant.phone = phone || restaurant.phone;
-      restaurant.website = website || restaurant.website;
-      restaurant.service = service || restaurant.service;
-      restaurant.tags = tags || restaurant.tags;
-      restaurant.city = city || restaurant.city;
-      restaurant.state = state || restaurant.state;
-      restaurant.zipCode = zipCode || restaurant.zipCode;
-      restaurant.restaurantImg = restaurantImg || restaurant.restaurantImg;
-      restaurant.verified = verified || restaurant.verified;
+      if (name !== undefined) restaurant.name = name;
+      if (address !== undefined) restaurant.address = address;
+      if (phone !== undefined) restaurant.phone = phone;
+      if (website !== undefined) restaurant.website = website;
+      if (service !== undefined) restaurant.service = service;
+      if (tags !== undefined) restaurant.tags = tags;
+      if (city !== undefined) restaurant.city = city;
+      if (state !== undefined) restaurant.state = state;
+      if (zipCode !== undefined) restaurant.zipCode = zipCode;
+      if (restaurantImg !== undefined) restaurant.restaurantImg = restaurantImg;
+      if (verified !== undefined) restaurant.verified = verified;
   
       // Save the updated restaurant
       const updatedRestaurant = await restaurant.save();
@@ -74,3 +74,30 @@ export const GET = async (req, { params }) => {
     }
   };
   
+
+
+export const DELETE = async (req, { params }) => {
+  try {
+    const { id } = params;
+
+    if (!id) {
+      return NextResponse.json({ error: 'Restaurant ID is required.' }, { status: 400 });
+    }
+
+    // Connect to the database
+    await connectToDB();
+
+    // Find and delete the restaurant by ID
+    const result = await Restaurant.findByIdAndDelete(id);
+    
+    if (!result) {
+      return NextResponse.json({ error: 'Restaurant not found.' }, { status: 404 });
+    }
+
+    // Respond with a success message
+    return NextResponse.json({ message: 'Restaurant deleted successfully.' }, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting restaurant:', error);
+    return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
+  }
+};

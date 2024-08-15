@@ -2,7 +2,7 @@ import React from 'react'
 import { CldImage } from "next-cloudinary";
 const SingleLeft = ({ data }) => {
   return (
-    <section className="is-relative py-20 overflow-hidden">
+    <section className="is-relative py-4 overflow-hidden">
   <div className="is-relative">
     <div className="section">
       <div className="container">
