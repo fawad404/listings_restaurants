@@ -8,18 +8,35 @@ import Footer from '../components/footer/Footer';
 export default function Page() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
+
+  const handleSignIn = async () => {
+    setError(''); // Clear previous errors
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false, // Prevent redirect
+    });
+
+    if (result.error) {
+      if(result.error === "CredentialsSignin"){
+        setError("Username and Password is incorrect");
+      }else{
+        setError(result.error);
+      }
+      // Handle error based on the response
+    } else {
+      // Redirect on successful sign in
+      router.push('/');
+    }
+  };
 
   return (
     <>
       <Navbar />
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            className="mx-auto h-10 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-            alt="Your Company"
-          />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-800">
             Sign in to your account
           </h2>
@@ -68,9 +85,15 @@ export default function Page() {
               </div>
             </div>
 
+            {error && (
+              <div className="text-red-500 text-center">
+                {error}
+              </div>
+            )}
+
             <div>
               <button
-                onClick={() => signIn('credentials', { email, password, redirect: true, callbackUrl: '/' })}
+                onClick={handleSignIn}
                 disabled={!email || !password}
                 className="disabled:opacity-40 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
               >
