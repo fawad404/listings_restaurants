@@ -2,26 +2,10 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { CldUploadWidget } from 'next-cloudinary';
-import { useSession } from "next-auth/react";
 
 const AddRestaurant = () => {
-  const { data: session, status } = useSession();
-  const [loading, setLoading] = useState(true);
   const [isLocationAvailable, setIsLocationAvailable] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    if (status === "loading") {
-      return;
-    }
-
-    if (!session) {
-      router.push('/signin');
-    } else {
-      setLoading(false);
-    }
-  }, [session, status, router]);
-
   const [name, setName] = useState("");
   const [restaurantType, setRestaurantType] = useState("");
   const [address, setAddress] = useState("");
@@ -37,6 +21,7 @@ const AddRestaurant = () => {
   const [slug, setSlug] = useState('');
   const [statuss, setStatuss] = useState("");
   const [hasSelected, setHasSelected] = useState(false);
+  const [seoDescription, setSeoDescription] = useState('');
   const [hasServiceSelected, setHasServiceSelected] = useState(false);
 
   const handleChange = (e) => {
@@ -90,7 +75,9 @@ const AddRestaurant = () => {
 
   const handleSeo = (e) => {
     const newTitle = e.target.value;
+    setSeoDescription(newTitle);
     setSlug(generateSlug(newTitle));
+    
   };
 
   //console.log(slug);
@@ -124,6 +111,7 @@ const AddRestaurant = () => {
       type: restaurantType,
       restaurantImg,
       slug,
+      seoDescription,
     };
 
     try {
