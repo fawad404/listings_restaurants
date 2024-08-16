@@ -1,4 +1,3 @@
-
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -9,15 +8,33 @@ const EditRestaurant = ({ id }) => {
     address: "",
     phone: "",
     website: "",
-    service: "",
+    service: [], // Initialize as an array for services
     tags: "",
     city: "",
     state: "",
     zipCode: "",
+    type: "",
     restaurantImg: "",
   });
   const [geolocation, setGeolocation] = useState({ lat: null, lon: null });
+  const [restaurantType, setRestaurantType] = useState(data.type);
+  const [selectedServices, setSelectedServices] = useState(data.service); // Manage selected services
   const router = useRouter();
+
+  // Handle change for restaurant type
+  const handleChange = (e) => {
+    setRestaurantType(e.target.value);
+  };
+
+  // Handle change for service checkboxes
+  const handleServiceChange = (e) => {
+    const value = e.target.value;
+    setSelectedServices((prevServices) =>
+      prevServices.includes(value)
+        ? prevServices.filter((service) => service !== value)
+        : [...prevServices, value]
+    );
+  };
 
   // Fetch restaurant data on component mount or when `id` changes
   useEffect(() => {
@@ -26,6 +43,8 @@ const EditRestaurant = ({ id }) => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant/${id}`);
         const result = await response.json();
         setData(result);
+        setRestaurantType(result.type); // Set initial restaurantType from fetched data
+        setSelectedServices(result.service); // Set initial selected services from fetched data
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -50,10 +69,11 @@ const EditRestaurant = ({ id }) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(geolocation);
 
     const restaurantData = {
       ...data,
+      type: restaurantType, // Include restaurantType in the data to be submitted
+      service: selectedServices, // Include selectedServices in the data to be submitted
       geolocation,
     };
 
@@ -67,10 +87,10 @@ const EditRestaurant = ({ id }) => {
       });
 
       if (response.ok) {
-        alert("Restaurant added successfully!");
+        alert("Restaurant updated successfully!");
         const result = await response.json();
         console.log(result);
-       // router.push('/');
+        // router.push('/');
       } else {
         const errorData = await response.json();
         alert(errorData.error || 'An error occurred');
@@ -127,6 +147,99 @@ const EditRestaurant = ({ id }) => {
               </div>
             </div>
           </div>
+
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">Type of Restaurant</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <div className="flex items-center space-x-4">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="restaurantType"
+                        value="food-truck"
+                        checked={restaurantType === "food-truck"}
+                        onChange={handleChange}
+                        className="form-radio h-4 w-4 text-green-500"
+                      />
+                      <span className="ml-2 text-coolGray-800">Food Truck</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="restaurantType"
+                        value="restaurant"
+                        checked={restaurantType === "restaurant"}
+                        onChange={handleChange}
+                        className="form-radio h-4 w-4 text-green-500"
+                      />
+                      <span className="ml-2 text-coolGray-800">Restaurant</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">Service</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <div className="flex flex-wrap space-x-4">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        value="dineIn"
+                        checked={selectedServices.includes("dineIn")}
+                        onChange={handleServiceChange}
+                        className="form-checkbox h-4 w-4 text-green-500"
+                      />
+                      <span className="ml-2 text-coolGray-800">Dine In</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        value="takeOut"
+                        checked={selectedServices.includes("takeOut")}
+                        onChange={handleServiceChange}
+                        className="form-checkbox h-4 w-4 text-green-500"
+                      />
+                      <span className="ml-2 text-coolGray-800">Take Out</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        value="buffet"
+                        checked={selectedServices.includes("buffet")}
+                        onChange={handleServiceChange}
+                        className="form-checkbox h-4 w-4 text-green-500"
+                      />
+                      <span className="ml-2 text-coolGray-800">Buffet</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        value="catering"
+                        checked={selectedServices.includes("catering")}
+                        onChange={handleServiceChange}
+                        className="form-checkbox h-4 w-4 text-green-500"
+                      />
+                      <span className="ml-2 text-coolGray-800">Catering</span>
+                    </label>
+                    {/* Add more service options as needed */}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="py-6 border-b border-coolGray-100">
             <div className="w-full md:w-9/12">
               <div className="flex flex-wrap -m-3">

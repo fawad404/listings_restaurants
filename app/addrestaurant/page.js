@@ -14,7 +14,7 @@ const Page = () => {
 
   useEffect(() => {
     if (status === "loading") {
-      return;
+      return <h1>loading...</h1>;
     }
 
     if (!session) {
@@ -31,6 +31,8 @@ const Page = () => {
         <Footer />
       </div>
     )
+  }else{
+    <h1>loading...</h1>
   }
 }
 

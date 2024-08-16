@@ -10,46 +10,7 @@ export default function Home() {
   const [restaurants, setRestaurants] = useState([]);
   const [location, setLocation] = useState(null);
   const [error, setError] = useState(null);
-
-  // useEffect(() => {
-  //   // Function to get user location
-  //   const getUserLocation = () => {
-  //     if (navigator.geolocation) {
-  //       navigator.geolocation.getCurrentPosition(
-  //         (position) => {
-  //           const { latitude, longitude } = position.coords;
-  //           setLocation({ latitude, longitude });
-  //         },
-  //         (error) => {
-  //           setError("Unable to retrieve your location. Please allow location access.");
-  //         }
-  //       );
-  //     } else {
-  //       setError("Geolocation is not supported by this browser.");
-  //     }
-  //   };
-
-  //   // Fetch restaurant data
-  //   const fetchRestaurantsData = async () => {
-  //     try {
-  //       const res = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant`);
-        
-  //       if (!res.ok) {
-  //         throw new Error(`HTTP error! Status: ${res.status}`);
-  //       }
-        
-  //       const data = await res.json();
-  //       setRestaurants(data);
-  //     } catch (error) {
-  //       console.error('Failed to fetch restaurant data:', error);
-  //     }
-  //   };
-
-  //   // Call functions
-  //   getUserLocation();
-  //   fetchRestaurantsData();
-  // }, []);
-
+   
   useEffect(() => {
     const getUserLocation = () => {
       if (navigator.geolocation) {
@@ -111,11 +72,6 @@ export default function Home() {
 
     getUserLocation();
   }, []);
-  useEffect(() => {
-    if (location) {
-      console.log('User location:', location);
-    }
-  }, [location]);
 
   const handleSearch = async (what, city) => {
     if(what !=='' && city ===''){

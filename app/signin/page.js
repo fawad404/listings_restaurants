@@ -1,15 +1,25 @@
 'use client';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+
+import { signIn, useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import Navbar from '../components/navbar/Navbar';
 import Footer from '../components/footer/Footer';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const { data: session, status } = useSession();
+  
+  useEffect(() => {
+    if (status === 'loading') return;
+
+    if (session) {
+      router.push('/'); // Redirect to home if session exists
+    }
+  }, [session, status, router]);
 
   const handleSignIn = async () => {
     setError(''); // Clear previous errors
@@ -20,18 +30,17 @@ export default function Page() {
     });
 
     if (result.error) {
-      if(result.error === "CredentialsSignin"){
-        setError("Username and Password is incorrect");
-      }else{
-        setError(result.error);
-      }
-      // Handle error based on the response
+      setError(result.error === 'CredentialsSignin' ? 'Username and Password is incorrect' : result.error);
     } else {
-      // Redirect on successful sign in
-      router.push('/');
+      router.push('/'); // Redirect on successful sign in
     }
   };
 
+  if (status === 'loading' || session) {
+    // Show nothing or a loading spinner while loading or if session exists
+    return null;
+  }
+  
   return (
     <>
       <Navbar />

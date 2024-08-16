@@ -3,6 +3,9 @@ import React from 'react'
 
 const SingleRight = ({ data }) => {
     const tagsArray = data.tags[0].split(' ');
+      // Convert service to a comma-separated string if it's an array
+  const serviceDisplay = Array.isArray(data.service) ? data.service.join(', ') : data.service;
+
   return (
     <section className="py-8">
   <div className="container px-4 mx-auto">
@@ -52,7 +55,9 @@ const SingleRight = ({ data }) => {
                 <p className="text-sm font-medium">Service</p>
               </div>
               <div className="w-1/2 px-4">
-                <p className="mb-1 text-sm text-indigo-500 font-medium">{data.service}</p>
+                <p className="mb-1 text-sm text-indigo-500 font-medium">
+                {serviceDisplay}
+                </p>
               </div>
             </div>
           </div>

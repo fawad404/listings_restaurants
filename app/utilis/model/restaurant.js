@@ -28,9 +28,9 @@ const restaurantSchema = new mongoose.Schema({
     },
   },
   service: {
-    type: String, // You can adjust this type based on how you want to store the service data
-    required: false, // Set to true if you want this field to be required
-  },
+    type: [String], // Array of strings
+    required: false,
+  },  
   tags: {
     type: [String], // Array of strings to store multiple tags
     required: false, // Set to true if you want this field to be required
