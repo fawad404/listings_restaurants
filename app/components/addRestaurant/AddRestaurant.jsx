@@ -97,7 +97,6 @@ const AddRestaurant = () => {
     }
 
     setStatuss("Sending...");
-    console.log(geolocation);
 
     const restaurantData = {
       name,
@@ -129,7 +128,6 @@ const AddRestaurant = () => {
         alert("Restaurant added successfully!");
         setStatuss("Sent");
         const data = await response.json();
-        console.log(data);
         router.push('/');
       } else {
         const errorData = await response.json();
