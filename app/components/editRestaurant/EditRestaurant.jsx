@@ -1,6 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { CldUploadWidget } from 'next-cloudinary';
+import { CldImage } from "next-cloudinary";
 
 const EditRestaurant = ({ id }) => {
   const [data, setData] = useState({
@@ -16,9 +18,12 @@ const EditRestaurant = ({ id }) => {
     type: "",
     restaurantImg: "",
   });
-  const [geolocation, setGeolocation] = useState({ lat: null, lon: null });
+  const [geolocation, setGeolocation] = useState('');
   const [restaurantType, setRestaurantType] = useState(data.type);
+  const [restaurantImg, setRestaurantImg] = useState('');
   const [selectedServices, setSelectedServices] = useState(data.service); // Manage selected services
+  const [initialAddress, setInitialAddress] = useState(""); // Track the initial address
+  const [adressChanger, setAdressChanger] = useState(false); // Track if the address has changed
   const router = useRouter();
 
   // Handle change for restaurant type
@@ -45,6 +50,7 @@ const EditRestaurant = ({ id }) => {
         setData(result);
         setRestaurantType(result.type); // Set initial restaurantType from fetched data
         setSelectedServices(result.service); // Set initial selected services from fetched data
+        setInitialAddress(result.address); // Set the initial address
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -52,23 +58,51 @@ const EditRestaurant = ({ id }) => {
     getRestaurant();
   }, [id]);
 
-  // Fetch geolocation on component mount
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
+  // Fetch geolocation
+  const fetchGeolocation = async (address) => {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.length > 0) {
+        const location = data[0];
+        //console.log(parseFloat(location.lat));
         setGeolocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
+          lat: parseFloat(location.lat),
+          lon: parseFloat(location.lon)
         });
-      });
-    } else {
-      console.error("Geolocation is not supported by this browser.");
+      } else {
+        setGeolocation({ lat: null, lon: null });
+        //console.log('Unable to find geolocation for the provided address.');
+      }
+    } catch (error) {
+      console.error('Error fetching geolocation:', error);
+      setGeolocation({ lat: null, lon: null });
+      //console.log('Error fetching geolocation.');
     }
-  }, []);
+  };
+
+  // Handle address change
+  const handleAddressChange = (e) => {
+    const newAddress = e.target.value;
+    setData(prevData => ({ ...prevData, address: newAddress }));
+    // Set addressChanged to true if the address has been modified from its initial state
+    if (newAddress !== initialAddress) {
+      fetchGeolocation(data.address);
+      //console.log("set changer to true mean geolocation will call")
+    } else {
+      setAdressChanger(false);
+      //console.log("previous address");
+    }
+  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if address has changed
+    
 
     const restaurantData = {
       ...data,
@@ -76,29 +110,36 @@ const EditRestaurant = ({ id }) => {
       service: selectedServices, // Include selectedServices in the data to be submitted
       geolocation,
     };
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(restaurantData),
-      });
-
-      if (response.ok) {
-        alert("Restaurant updated successfully!");
-        const result = await response.json();
-        console.log(result);
-        // router.push('/');
-      } else {
-        const errorData = await response.json();
-        alert(errorData.error || 'An error occurred');
+    if(geolocation) {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/addrestaurant/${id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(restaurantData),
+        });
+  
+        if (response.ok) {
+          alert("Restaurant updated successfully!");
+          const result = await response.json();
+          
+          // router.push('/');
+        } else {
+          const errorData = await response.json();
+          alert(errorData.error || 'An error occurred');
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
       }
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    } else {
+      console.log("geolocation is not set after fetching");
     }
   };
+
+  const handleCancel = () => {
+    router.push('/admin');
+   }
 
   return (
     <section className="bg-coolGray-50 py-4">
@@ -113,7 +154,9 @@ const EditRestaurant = ({ id }) => {
               <div className="w-full md:w-auto p-2">
                 <div className="flex flex-wrap justify-between -m-1.5">
                   <div className="w-full md:w-auto p-1.5">
-                    <button className="flex flex-wrap justify-center w-full px-4 py-2 font-medium text-sm text-coolGray-500 hover:text-coolGray-600 border border-coolGray-200 hover:border-coolGray-300 bg-white rounded-md shadow-button">
+                    <button 
+                    onClick={handleCancel}
+                    className="flex flex-wrap justify-center w-full px-4 py-2 font-medium text-sm text-coolGray-500 hover:text-coolGray-600 border border-coolGray-200 hover:border-coolGray-300 bg-white rounded-md shadow-button">
                       <p>Cancel</p>
                     </button>
                   </div>
@@ -240,24 +283,8 @@ const EditRestaurant = ({ id }) => {
             </div>
           </div>
 
-          <div className="py-6 border-b border-coolGray-100">
-            <div className="w-full md:w-9/12">
-              <div className="flex flex-wrap -m-3">
-                <div className="w-full md:w-1/3 p-3">
-                  <p className="text-sm text-coolGray-800 font-semibold">Address</p>
-                </div>
-                <div className="w-full md:flex-1 p-3">
-                  <input
-                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
-                    type="text"
-                    placeholder="House# Town USA"
-                    value={data.address}
-                    onChange={(e) => setData(prevData => ({ ...prevData, address: e.target.value }))}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          
+
           <div className="py-6 border-b border-coolGray-100">
             <div className="w-full md:w-9/12">
               <div className="flex flex-wrap -m-3">
@@ -330,6 +357,26 @@ const EditRestaurant = ({ id }) => {
               </div>
             </div>
           </div>
+
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">Address</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <input
+                    className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
+                    type="text"
+                    placeholder="House# Town USA"
+                    value={data.address}
+                    onChange={handleAddressChange} // Use handleAddressChange instead of directly setting state
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="py-6 border-b border-coolGray-100">
             <div className="w-full md:w-9/12">
               <div className="flex flex-wrap -m-3">
@@ -381,6 +428,49 @@ const EditRestaurant = ({ id }) => {
                     value={data.zipCode}
                     onChange={(e) => setData(prevData => ({ ...prevData, zipCode: e.target.value }))}
                   />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="py-6 border-b border-coolGray-100">
+            <div className="w-full md:w-9/12">
+              <div className="flex flex-wrap -m-3">
+                <div className="w-full md:w-1/3 p-3">
+                  <p className="text-sm text-coolGray-800 font-semibold">Upload Image</p>
+                </div>
+                <div className="w-full md:flex-1 p-3">
+                  <CldUploadWidget
+                    signatureEndpoint="/api/sign-cloudinary-params"
+                    onSuccess={(result, { widget }) => {
+                      setRestaurantImg(result?.info.public_id);
+                    }}
+                  >
+                    {({ open }) => {
+                      function handleOnClick() {
+                        setRestaurantImg(undefined);
+                        open();
+                      }
+                      return (
+                        restaurantImg ? (
+                          <CldImage
+                      width="200"
+                      height="48"
+                      src={restaurantImg}
+                      sizes="100vw"
+                      alt="Description of my image"
+                    />
+                        ) : (
+                          <button
+                            className="text-blue-800 font-semibold"
+                            onClick={handleOnClick}
+                          >
+                            Click to Upload Image
+                          </button>
+                        )
+                      );
+                    }}
+                  </CldUploadWidget>
                 </div>
               </div>
             </div>

@@ -20,11 +20,11 @@ const restaurantSchema = new mongoose.Schema({
   geolocation: {
     lat: {
       type: Number,
-      required: true,
+      required: false,
     },
     lon: {
       type: Number,
-      required: true,
+      required: false,
     },
   },
   service: {

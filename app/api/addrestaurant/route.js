@@ -27,7 +27,7 @@ export const POST = async (req) => {
     const { name, address, phone, website, geolocation, service, tags, city, state, zipCode, type, restaurantImg, slug, seoDescription } = body;
 
     // Check if all required fields are provided
-    if (!name || !address || !phone || !website || !geolocation) {
+    if (!name || !address || !phone || !website) {
       return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
     }
 

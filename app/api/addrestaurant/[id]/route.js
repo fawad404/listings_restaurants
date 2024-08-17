@@ -38,7 +38,7 @@ export const GET = async (req, { params }) => {
   
       // Parse the request body
       const body = await req.json();
-      const { name, address, phone, website, service, tags, city, state, zipCode, restaurantImg, verified } = body;
+      const { name, address, phone, website, service, geolocation, tags, city, state, zipCode, restaurantImg, verified } = body;
       const { id } = params;
   
       // Connect to the database
@@ -60,6 +60,7 @@ export const GET = async (req, { params }) => {
       if (city !== undefined) restaurant.city = city;
       if (state !== undefined) restaurant.state = state;
       if (zipCode !== undefined) restaurant.zipCode = zipCode;
+      if (geolocation !== undefined) restaurant.geolocation = geolocation;
       if (restaurantImg !== undefined) restaurant.restaurantImg = restaurantImg;
       if (verified !== undefined) restaurant.verified = verified;
   
