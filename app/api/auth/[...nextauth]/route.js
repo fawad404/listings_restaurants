@@ -76,24 +76,36 @@ const handler = NextAuth({
     error: '/auth/error', // Adjust as needed
   },
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({ user, account, profile }) {
       if (account.provider === 'google') {
         await connectToDB();
-
+        
+        // Check if the user already exists
         const existingUser = await User.findOne({ email: user.email });
-
+  
         if (!existingUser) {
           const newUser = new User({
             email: user.email,
             username: user.name || 'User',
-            // No password for Google users
+            // No password needed for Google users
           });
-
+  
           await newUser.save();
         }
+  
+        return true;  // Let the sign-in continue
       }
-
+  
       return true;
+    },
+    async redirect({ url, baseUrl }) {
+      // Ensure that Google sign-ins are redirected to the home page
+      if (url.startsWith(baseUrl)) {
+        return url;
+      } else if (url.startsWith('/')) {
+        return new URL(url, baseUrl).toString();
+      }
+      return baseUrl;  // Redirect to the home page as fallback
     },
     async session({ session, token }) {
       if (token) {
