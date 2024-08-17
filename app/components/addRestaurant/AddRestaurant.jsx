@@ -4,10 +4,7 @@ import { useState } from "react";
 import { CldUploadWidget } from 'next-cloudinary';
 
 const AddRestaurant = () => {
-<<<<<<< HEAD
   const router = useRouter();
-=======
->>>>>>> 10c0091fbec90fb86c3f3436d7b1eb8ba0534971
   const [name, setName] = useState("");
   const [restaurantType, setRestaurantType] = useState("");
   const [address, setAddress] = useState("");
@@ -28,7 +25,6 @@ const AddRestaurant = () => {
   const [slug, setSlug] = useState('');
   const [statuss, setStatuss] = useState("");
   const [seoDescription, setSeoDescription] = useState('');
-  const router = useRouter();
 
   const handleChange = (e) => {
     setRestaurantType(e.target.value);
