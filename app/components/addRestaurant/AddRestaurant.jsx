@@ -4,7 +4,10 @@ import { useState } from "react";
 import { CldUploadWidget } from 'next-cloudinary';
 
 const AddRestaurant = () => {
+<<<<<<< HEAD
   const router = useRouter();
+=======
+>>>>>>> 10c0091fbec90fb86c3f3436d7b1eb8ba0534971
   const [name, setName] = useState("");
   const [restaurantType, setRestaurantType] = useState("");
   const [address, setAddress] = useState("");
@@ -25,6 +28,7 @@ const AddRestaurant = () => {
   const [slug, setSlug] = useState('');
   const [statuss, setStatuss] = useState("");
   const [seoDescription, setSeoDescription] = useState('');
+  const router = useRouter();
 
   const handleChange = (e) => {
     setRestaurantType(e.target.value);
@@ -33,26 +37,24 @@ const AddRestaurant = () => {
   const handleServiceChange = (event) => {
     const { name, checked } = event.target;
   
-    // Update the service object based on the checkbox state
     setService(prevService => ({
       ...prevService,
       [name]: checked
     }));
   };
 
-  // Function to fetch geolocation from address
+  // Function to fetch geolocation from address using OpenStreetMap's Nominatim API
   const fetchGeolocation = async (address) => {
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; // Make sure to add this to your environment variables
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
 
     try {
       const response = await fetch(url);
-      const data = response.data;
-      if (data.results.length > 0) {
-        const location = data.results[0].geometry.location;
+      const data = await response.json();
+      if (data.length > 0) {
+        const location = data[0];
         setGeolocation({
-          lat: location.lat,
-          lon: location.lng
+          lat: parseFloat(location.lat),
+          lon: parseFloat(location.lon)
         });
       } else {
         setGeolocation({ lat: null, lon: null });
@@ -82,7 +84,7 @@ const AddRestaurant = () => {
 
   const handleSeo = (e) => {
     const newTitle = e.target.value;
-    setSeoDescription(newTitle);
+    setName(newTitle);
     setSlug(generateSlug(newTitle));
   };
 
@@ -99,7 +101,6 @@ const AddRestaurant = () => {
     }
 
     setStatuss("Sending...");
-    console.log(geolocation);
 
     const restaurantData = {
       name,
@@ -131,7 +132,6 @@ const AddRestaurant = () => {
         alert("Restaurant added successfully!");
         setStatuss("Sent");
         const data = await response.json();
-        console.log(data);
         router.push('/');
       } else {
         const errorData = await response.json();
@@ -141,6 +141,7 @@ const AddRestaurant = () => {
       console.error("Error submitting form:", error);
     }
   };
+
 
   return (
     <section className="bg-coolGray-50 py-4">
@@ -186,7 +187,7 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="Dolla Restaurant"
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={handleSeo}
                   />
                 </div>
               </div>
@@ -393,7 +394,7 @@ const AddRestaurant = () => {
                     className="w-full px-4 py-2.5 text-base text-coolGray-900 font-normal outline-none focus:border-green-500 border border-coolGray-200 rounded-lg shadow-input"
                     type="text"
                     placeholder="Write 60 characters description for seo"
-                    onChange={handleSeo}
+                    onChange={(e) => setSeoDescription(e.target.value)}
                   />
                 </div>
               </div>

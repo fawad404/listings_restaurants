@@ -138,7 +138,10 @@ export default function Home() {
 
     ):(
       <Featured onSearch={handleSearch} />
+<<<<<<< HEAD
     )}
+=======
+>>>>>>> 10c0091fbec90fb86c3f3436d7b1eb8ba0534971
       {loading ? (
         <div className="text-center mb-18 mt-4">
           <h1 className="font-heading text-xl xs:text-2xl md:text-2xl font-bold text-gray-900 mb-4">
