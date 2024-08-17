@@ -28,13 +28,23 @@ export default function Page() {
       password,
       redirect: false, // Prevent redirect
     });
-
+  
     if (result.error) {
       setError(result.error === 'CredentialsSignin' ? 'Username and Password is incorrect' : result.error);
     } else {
       router.push('/'); // Redirect on successful sign in
     }
   };
+  
+  // Handle Google sign-in
+  const handleGoogleSignIn = async () => {
+    const result = await signIn('google', { redirect: false });
+  
+    if (result && !result.error) {
+      router.push('/'); // Redirect on successful Google sign in
+    }
+  };
+  
 
   if (status === 'loading' || session) {
     // Show nothing or a loading spinner while loading or if session exists
@@ -111,8 +121,8 @@ export default function Page() {
             </div>
 
             <div>
-              <button
-                onClick={() => signIn('google')}
+            <button
+                onClick={handleGoogleSignIn}
                 className="flex w-full justify-center rounded-md bg-white px-3 py-1.5 text-sm font-semibold leading-6 text-gray-800 shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-800"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24" height="24" fill="currentColor">
@@ -120,9 +130,9 @@ export default function Page() {
                 </svg>
                 <span className="ml-2">Continue with Google</span>
               </button>
+
             </div>
           </div>
-
           <p className="mt-10 text-center text-sm text-gray-400">
             Not a member?{' '}
             <button onClick={() => router.push('signup')} className="font-semibold leading-6 text-indigo-400 hover:text-indigo-300">
